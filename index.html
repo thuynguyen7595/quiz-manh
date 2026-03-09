@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎉 Kiểm Tra Năng Lực Nhận Quà – Tuấn Mạnh</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink:   #ff4e8b;
+    --yellow: #ffd600;
+    --purple: #7c3aed;
+    --cyan:   #06d6a0;
+    --orange: #ff6b35;
+    --bg:     #1a0533;
+    --card:   rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Baloo 2', cursive;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ── CONFETTI CANVAS ── */
+  #confetti-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── FLOATING BALLOONS ── */
+  .balloons {
+    position: fixed;
+    bottom: -80px;
+    left: 0; right: 0;
+    display: flex;
+    justify-content: space-around;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .balloon {
+    font-size: 3rem;
+    animation: floatUp linear infinite;
+    opacity: 0.7;
+  }
+  .balloon:nth-child(1) { animation-duration: 8s;  animation-delay: 0s;   font-size: 2.2rem; }
+  .balloon:nth-child(2) { animation-duration: 11s; animation-delay: 1.5s; font-size: 3.2rem; }
+  .balloon:nth-child(3) { animation-duration: 9s;  animation-delay: 3s;   font-size: 2.5rem; }
+  .balloon:nth-child(4) { animation-duration: 13s; animation-delay: 0.5s; font-size: 2.8rem; }
+  .balloon:nth-child(5) { animation-duration: 7s;  animation-delay: 2s;   font-size: 2rem;   }
+  .balloon:nth-child(6) { animation-duration: 10s; animation-delay: 4s;   font-size: 3rem;   }
+
+  @keyframes floatUp {
+    0%   { transform: translateY(0)   rotate(-5deg); opacity: 0;   }
+    10%  { opacity: 0.7; }
+    90%  { opacity: 0.7; }
+    100% { transform: translateY(-110vh) rotate(5deg); opacity: 0; }
+  }
+
+  /* ── MAIN CONTAINER ── */
+  .container {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 680px;
+    margin: 2rem 1rem;
+    padding: 2.5rem 2.5rem;
+    background: linear-gradient(135deg, rgba(255,255,255,0.09) 0%, rgba(124,58,237,0.12) 100%);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    backdrop-filter: blur(12px);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.06),
+      0 32px 80px rgba(0,0,0,0.55),
+      inset 0 1px 0 rgba(255,255,255,0.12);
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; animation: fadeIn 0.45s ease both; }
+  .screen.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── TYPOGRAPHY ── */
+  .title-main {
+    font-size: clamp(1.3rem, 4vw, 1.7rem);
+    font-weight: 800;
+    color: #fff;
+    text-align: center;
+    line-height: 1.35;
+    text-shadow: 0 0 30px rgba(255,214,0,0.4);
+    margin-bottom: 1rem;
+  }
+  .title-main .highlight {
+    background: linear-gradient(90deg, var(--yellow), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .subtitle {
+    text-align: center;
+    color: rgba(255,255,255,0.75);
+    font-size: 1rem;
+    font-family: 'Quicksand', sans-serif;
+    line-height: 1.6;
+    margin-bottom: 1.8rem;
+    background: rgba(255,255,255,0.05);
+    border-left: 4px solid var(--pink);
+    padding: 0.9rem 1.1rem;
+    border-radius: 10px;
+  }
+  .judge-tag {
+    display: inline-block;
+    background: linear-gradient(90deg, var(--pink), var(--purple));
+    color: #fff;
+    font-weight: 700;
+    padding: 0.2em 0.7em;
+    border-radius: 20px;
+    font-size: 0.95em;
+  }
+
+  /* ── BUTTON ── */
+  .btn-start, .btn-next {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #1a0533;
+    background: linear-gradient(90deg, var(--yellow), var(--orange));
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    box-shadow: 0 6px 28px rgba(255,214,0,0.35);
+    transition: transform 0.15s, box-shadow 0.15s;
+    margin-top: 0.5rem;
+  }
+  .btn-start:hover, .btn-next:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 36px rgba(255,107,53,0.5);
+  }
+  .btn-start:active, .btn-next:active {
+    transform: scale(0.97);
+  }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+  .progress-label {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+    white-space: nowrap;
+    font-family: 'Quicksand', sans-serif;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cyan), var(--yellow));
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+
+  /* ── QUESTION ── */
+  .q-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    background: linear-gradient(90deg, var(--purple), var(--pink));
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.25em 0.8em;
+    border-radius: 20px;
+    margin-bottom: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .q-category {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.4);
+    font-family: 'Quicksand', sans-serif;
+    margin-bottom: 0.4rem;
+  }
+  .q-text {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.5;
+    margin-bottom: 1.4rem;
+    text-shadow: 0 1px 10px rgba(0,0,0,0.3);
+  }
+
+  /* ── OPTIONS ── */
+  .options {
+    display: grid;
+    gap: 0.7rem;
+    margin-bottom: 1.2rem;
+  }
+  .opt-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.85rem 1.1rem;
+    background: rgba(255,255,255,0.06);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    color: rgba(255,255,255,0.88);
+    font-family: 'Baloo 2', cursive;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s, border-color 0.18s, transform 0.12s;
+    text-align: left;
+    width: 100%;
+  }
+  .opt-btn:hover:not(:disabled) {
+    background: rgba(255,255,255,0.12);
+    border-color: var(--yellow);
+    transform: translateX(4px);
+  }
+  .opt-btn .opt-letter {
+    min-width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.1);
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: var(--yellow);
+    flex-shrink: 0;
+    transition: background 0.18s;
+  }
+  .opt-btn.correct {
+    background: rgba(6,214,160,0.18);
+    border-color: var(--cyan);
+    color: #fff;
+  }
+  .opt-btn.correct .opt-letter { background: var(--cyan); color: #1a0533; }
+  .opt-btn.wrong {
+    background: rgba(255,78,139,0.18);
+    border-color: var(--pink);
+    color: #fff;
+  }
+  .opt-btn.wrong .opt-letter { background: var(--pink); color: #fff; }
+  .opt-btn:disabled { cursor: not-allowed; }
+
+  /* ── FEEDBACK ── */
+  .feedback {
+    padding: 0.85rem 1.1rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    display: none;
+    animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.85); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  .feedback.show { display: block; }
+  .feedback.success {
+    background: rgba(6,214,160,0.15);
+    border: 1.5px solid var(--cyan);
+    color: var(--cyan);
+  }
+  .feedback.error {
+    background: rgba(255,78,139,0.12);
+    border: 1.5px solid var(--pink);
+    color: #ffb3cc;
+  }
+
+  /* ── FINISH SCREEN ── */
+  .finish-emoji {
+    font-size: 4.5rem;
+    text-align: center;
+    animation: bounce 0.8s ease infinite alternate;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  @keyframes bounce {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-14px); }
+  }
+  .finish-title {
+    font-size: clamp(1.6rem, 5vw, 2.2rem);
+    font-weight: 800;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 0.6rem;
+    text-shadow: 0 0 40px rgba(255,214,0,0.5);
+  }
+  .finish-sub {
+    text-align: center;
+    color: rgba(255,255,255,0.75);
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 1.6rem;
+  }
+  .magic-phrase {
+    text-align: center;
+    background: linear-gradient(135deg, var(--yellow), var(--orange), var(--pink));
+    border-radius: 18px;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 8px 40px rgba(255,107,53,0.3);
+  }
+  .magic-label {
+    font-size: 0.8rem;
+    color: rgba(26,5,51,0.7);
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+  .magic-text {
+    font-size: clamp(1.3rem, 4vw, 1.9rem);
+    font-weight: 800;
+    color: #1a0533;
+    line-height: 1.3;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+  }
+
+  /* ── STARS ── */
+  .stars {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .star {
+    position: absolute;
+    border-radius: 50%;
+    background: #fff;
+    animation: twinkle linear infinite;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.1; transform: scale(1); }
+    50%       { opacity: 0.8; transform: scale(1.3); }
+  }
+
+  /* ── SHAKE ── */
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    15%     { transform: translateX(-8px); }
+    30%     { transform: translateX(8px); }
+    45%     { transform: translateX(-6px); }
+    60%     { transform: translateX(6px); }
+    75%     { transform: translateX(-3px); }
+    90%     { transform: translateX(3px); }
+  }
+  .shake { animation: shake 0.5s ease; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 500px) {
+    .container { padding: 1.6rem 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Background layers -->
+<canvas id="confetti-canvas"></canvas>
+<div class="stars" id="stars"></div>
+<div class="balloons">
+  <span class="balloon">🎈</span>
+  <span class="balloon">🎉</span>
+  <span class="balloon">🎈</span>
+  <span class="balloon">🎂</span>
+  <span class="balloon">🎈</span>
+  <span class="balloon">🎉</span>
+</div>
+
+<!-- ═══ MAIN CARD ═══ -->
+<div class="container">
+
+  <!-- SCREEN 0: INTRO -->
+  <div class="screen active" id="screen-intro">
+    <p style="text-align:center;font-size:2.5rem;margin-bottom:0.8rem">🎉🎂🎉</p>
+    <h1 class="title-main">
+      Chào mừng <span class="highlight">Đồng Chí Tuấn Mạnh</span> đến với<br>
+      Hệ Thống Kiểm Tra Năng Lực Nhận Quà Sinh Nhật
+    </h1>
+    <div class="subtitle">
+      Để nhận được quà, đồng chí phải trả lời đúng <strong style="color:var(--yellow)">3 câu hỏi</strong>.<br>
+      Sai sẽ phải làm lại <em>ngay lập tức</em>.<br><br>
+      <span class="judge-tag">⚖️ Ban Giám Khảo: Đồng Chí Thuỷ</span>
+    </div>
+    <button class="btn-start" onclick="startQuiz()">🚀 Bắt đầu thử thách</button>
+  </div>
+
+  <!-- SCREEN 1: QUIZ -->
+  <div class="screen" id="screen-quiz">
+    <div class="progress-wrap">
+      <span class="progress-label" id="progress-text">Câu 1 / 3</span>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="q-tag" id="q-tag">📌 Câu hỏi 1</div>
+    <div class="q-category" id="q-category">Thể thao</div>
+    <div class="q-text" id="q-text">Câu hỏi...</div>
+
+    <div class="options" id="options-container"></div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <button class="btn-next" id="btn-next" style="display:none" onclick="nextQuestion()">Tiếp theo →</button>
+  </div>
+
+  <!-- SCREEN 2: FINISH -->
+  <div class="screen" id="screen-finish">
+    <span class="finish-emoji">🏆</span>
+    <h2 class="finish-title">🎉 Chúc mừng Đồng Chí Tuấn Mạnh!</h2>
+    <p class="finish-sub">
+      Đồng chí đã vượt qua bài kiểm tra năng lực.<br>
+      Để nhận quà, hãy quay sang <strong style="color:var(--yellow)">Đồng Chí Thuỷ</strong> và đọc to câu thần chú sau:
+    </p>
+    <div class="magic-phrase">
+      <div class="magic-label">✨ Câu Thần Chú Nhận Quà ✨</div>
+      <div class="magic-text">«&nbsp;Thuỷ ơi cho anh nhận quà với!&nbsp;»</div>
+    </div>
+    <p style="text-align:center;color:rgba(255,255,255,0.4);font-size:0.85rem;font-family:'Quicksand',sans-serif">
+      Ban Giám Khảo Thuỷ xác nhận kết quả hợp lệ 🎖️
+    </p>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+/* ─────────────────────────────
+   DATA
+───────────────────────────── */
+const questions = [
+  {
+    tag: "⚽ Câu 1",
+    category: "Chủ đề: Bóng đá",
+    text: "Lionel Messi đã vô địch World Cup 2022 cùng đội tuyển nào?",
+    options: ["Brazil", "Argentina", "Pháp", "Tây Ban Nha"],
+    correct: 1
+  },
+  {
+    tag: "🐟 Câu 2",
+    category: "Chủ đề: Cá cảnh",
+    text: "Loài cá cảnh nào nổi tiếng vì cá đực rất hiếu chiến và thường phải nuôi riêng?",
+    options: ["Cá Koi", "Cá Betta", "Cá vàng", "Cá bảy màu"],
+    correct: 1
+  },
+  {
+    tag: "💍 Câu 3",
+    category: "Chủ đề: Hôn nhân & Sinh tồn",
+    text: "Trong hôn nhân, khi vợ nói \"tùy anh\", điều đó thường có nghĩa là gì?",
+    options: [
+      "Bạn hoàn toàn tự do quyết định",
+      "Bạn nên hỏi lại vợ",
+      "Quyết định thực ra đã có rồi",
+      "B và C đều đúng"
+    ],
+    correct: 3
+  }
+];
+
+const wrongMessages = [
+  "❌ Sai rồi đồng chí. Ban giám khảo Thuỷ đang lắc đầu.",
+  "❌ Sai. Đồng chí cần xem lại kiến thức trước khi nhận quà.",
+  "❌ Không ổn rồi. Hãy thử lại trước khi Thuỷ đổi ý.",
+  "❌ Sai. Đồng chí vẫn chưa đủ điều kiện nhận quà.",
+  "❌ Hệ thống AI phát hiện đồng chí đang đoán bừa. Hãy suy nghĩ kỹ hơn.",
+  "❌ Đồng chí Thuỷ vừa thở dài. Làm lại đi."
+];
+
+/* ─────────────────────────────
+   STATE
+───────────────────────────── */
+let currentQ = 0;
+let answered  = false;
+
+/* ─────────────────────────────
+   STARS
+───────────────────────────── */
+(function createStars() {
+  const wrap = document.getElementById('stars');
+  for (let i = 0; i < 60; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 3 + 1;
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      animation-duration:${Math.random()*4+2}s;
+      animation-delay:${Math.random()*5}s;
+    `;
+    wrap.appendChild(s);
+  }
+})();
+
+/* ─────────────────────────────
+   CONFETTI ENGINE
+───────────────────────────── */
+const canvas  = document.getElementById('confetti-canvas');
+const ctx     = canvas.getContext('2d');
+let   particles = [];
+let   confettiRunning = false;
+
+function resizeCanvas() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+const COLORS = ['#ffd600','#ff4e8b','#06d6a0','#7c3aed','#ff6b35','#fff'];
+
+function spawnConfetti(n = 80) {
+  for (let i = 0; i < n; i++) {
+    particles.push({
+      x:  Math.random() * canvas.width,
+      y:  -10,
+      vx: (Math.random() - 0.5) * 5,
+      vy: Math.random() * 4 + 2,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      size: Math.random() * 8 + 4,
+      rotation: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 8,
+      shape: Math.random() > 0.5 ? 'rect' : 'circle'
+    });
+  }
+}
+
+function drawConfetti() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach((p, i) => {
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate((p.rotation * Math.PI) / 180);
+    ctx.fillStyle = p.color;
+    if (p.shape === 'rect') {
+      ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+    } else {
+      ctx.beginPath();
+      ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+    p.x  += p.vx;
+    p.y  += p.vy;
+    p.rotation += p.rotSpeed;
+    p.vy += 0.08;
+  });
+  particles = particles.filter(p => p.y < canvas.height + 20);
+  if (confettiRunning || particles.length > 0) requestAnimationFrame(drawConfetti);
+}
+
+function startConfetti(duration = 3000) {
+  confettiRunning = true;
+  spawnConfetti(120);
+  drawConfetti();
+  setTimeout(() => { confettiRunning = false; }, duration);
+  const interval = setInterval(() => { spawnConfetti(40); }, 400);
+  setTimeout(() => clearInterval(interval), duration);
+}
+
+/* ─────────────────────────────
+   QUIZ LOGIC
+───────────────────────────── */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startQuiz() {
+  currentQ = 0;
+  showScreen('screen-quiz');
+  loadQuestion();
+}
+
+function loadQuestion() {
+  const q = questions[currentQ];
+  answered = false;
+
+  document.getElementById('q-tag').textContent      = q.tag;
+  document.getElementById('q-category').textContent = q.category;
+  document.getElementById('q-text').textContent     = q.text;
+  document.getElementById('progress-text').textContent = `Câu ${currentQ + 1} / ${questions.length}`;
+  document.getElementById('progress-fill').style.width = `${(currentQ / questions.length) * 100}%`;
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback';
+  fb.textContent = '';
+
+  document.getElementById('btn-next').style.display = 'none';
+
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${opt}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    container.appendChild(btn);
+  });
+}
+
+function selectAnswer(index) {
+  if (answered) return;
+  answered = true;
+
+  const q    = questions[currentQ];
+  const btns = document.querySelectorAll('.opt-btn');
+  const fb   = document.getElementById('feedback');
+
+  // Disable all buttons immediately to prevent double-click
+  btns.forEach(b => b.disabled = true);
+
+  if (index === q.correct) {
+    // ✅ CORRECT: highlight green, show success, allow next
+    btns[index].classList.add('correct');
+    fb.className = 'feedback success show';
+    fb.textContent = '✔ Chính xác. Đồng chí được phép đi tiếp.';
+    startConfetti(2200);
+    document.getElementById('btn-next').style.display = 'block';
+  } else {
+    // ❌ WRONG: only highlight the chosen answer red, DO NOT reveal correct
+    btns[index].classList.add('wrong');
+    const msg = wrongMessages[Math.floor(Math.random() * wrongMessages.length)];
+    fb.className = 'feedback error show';
+    fb.textContent = msg;
+    document.getElementById('screen-quiz').classList.add('shake');
+
+    // After short delay: remove shake, clear feedback, re-enable all buttons
+    setTimeout(() => {
+      document.getElementById('screen-quiz').classList.remove('shake');
+      fb.className = 'feedback'; // hide feedback
+      // Re-enable & reset button styles so player can try again
+      btns.forEach(b => {
+        b.disabled = false;
+        b.classList.remove('wrong', 'correct');
+      });
+      answered = false; // allow answering again
+    }, 1600);
+  }
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= questions.length) {
+    showScreen('screen-finish');
+    startConfetti(8000);
+    document.getElementById('progress-fill').style.width = '100%';
+  } else {
+    loadQuestion();
+  }
+}
+</script>
+</body>
+</html>
